@@ -395,6 +395,7 @@ __interrupt void PORT1_ISR (void)
 		///> turn on edit mode LED
 		LED_14443B_ON;
 	}
+/************	Smart Medical NFC Scanner Project	************/
 
 }
 
