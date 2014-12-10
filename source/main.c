@@ -126,8 +126,10 @@
 #include "uart.h"
 #include "patient.h"
 
+/************	Smart Medical NFC Scanner Project	************/
 #define SCAN_DELAY_INIT_MS 500
 #define MODE_SWITCH_DELAY_MS 250
+/************	Smart Medical NFC Scanner Project	************/
 
 //===============================================================
 
@@ -211,11 +213,13 @@ void main(void)
 	// launchpad LED1
 	P1DIR |= BIT0;
 
+	/************	Smart Medical NFC Scanner Project	************/
 	//init function for the patient array
 	init_patient();
 
 	P1IN&=BIT3;		///< Port 1.3 (left button) as input as mode switch
-
+	/************	Smart Medical NFC Scanner Project	************/
+	
 	while(1)
 	{
 		Tag_Count = 0;
