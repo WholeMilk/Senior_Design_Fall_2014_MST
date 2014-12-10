@@ -1,3 +1,20 @@
+
+/**
+ * Senior Design Project II - EE/CPE 4097
+ * 
+ * Project:	Smart Medical Identification Reader
+ * 
+ * Author: 	Xiao Deng 	- xddkf@mst.edu
+ * 		Neshat Osmani 	- nox93@mst.edu
+ * 		Justin Vance	- jpvdmb@mst.edu
+ * 		Al Dohmen	- ardqm9@mst.edu
+ * 
+ * Advisor:	Dr. Kosbar
+ * Instructor:	Dr Rosa Zheng
+ * Institution:	Missouri University of Science & Technology
+ * 
+ */
+
 /*
  * {main.c}
  *
@@ -126,11 +143,13 @@ s08_t rxtx_state = 1;           // USED FOR TRANSMIT RECEIVE BYTE COUNT
 u08_t host_control_flag = 0;
 u08_t stand_alone_flag = 1;
 
-int edit_mode = 0;
-int found_tag_ISO14443a = 0;
-int found_tag_ISO15693 = 0;
-int empty_scan_cnt = 0;
-int delay_factor = 0;
+/************	Smart Medical NFC Scanner Project	************/
+int edit_mode = 0;			///< Edit mode switch, 1 = ON, 0 = OFF
+int found_tag_ISO14443a = 0;		///< Flag for ISO14443a tag found
+int found_tag_ISO15693 = 0;		///< Flag for ISO15693 tag found
+int empty_scan_cnt = 0;			///< Empty scan counter, scan frequency modification
+int delay_factor = 0;			///< Delay factor, scan delay modification
+/************	Smart Medical NFC Scanner Project	************/
 
 //===============================================================
 
@@ -167,6 +186,7 @@ void main(void)
 	// Configure UART
 	UartSetup();
 
+	/************	Smart Medical NFC Scanner Project	************/
 	McuDelayMillisecond(5);
 	UartSendCString("[INFO] NFC Reader ENABLED.");
 	UartPutCrlf();
@@ -177,7 +197,8 @@ void main(void)
 	P1REN |= 0x08;					// Enable Port P1.3 (push button) pull-up resistor
 	P1IE |= 0x08;					// Port 1 Interrupt Enable P1.3 (push button)
 	P1IFG &= ~0x08;					// Clear interrupt flag
-
+	/************	Smart Medical NFC Scanner Project	************/
+	
 	// General enable interrupts
 	__bis_SR_register(GIE);
 
@@ -193,7 +214,7 @@ void main(void)
 	//init function for the patient array
 	init_patient();
 
-	P1IN&=BIT3;
+	P1IN&=BIT3;		///< Port 1.3 (left button) as input as mode switch
 
 	while(1)
 	{
@@ -213,29 +234,40 @@ void main(void)
 
 		ENABLE_TRF;
 
+		/************	Smart Medical NFC Scanner Project	************/
 		// Must wait at least 4.8 ms to allow TRF7970A to initialize.
 		__delay_cycles(40000);
 		#ifdef ENABLE15693
-				found_tag_ISO15693 = Iso15693FindTag( edit_mode );		// Scan for 15693 tags
+				found_tag_ISO15693 = Iso15693FindTag( edit_mode );	///< Scan for 15693 tags
 		#endif
 
 		#ifdef ENABLE14443A
-				found_tag_ISO14443a = Iso14443aFindTag( edit_mode );	// Scan for 14443A tags
+				found_tag_ISO14443a = Iso14443aFindTag( edit_mode );	///< Scan for 14443A tags
 		#endif
-
+		/*	We are not using 14443B type tag
 		#ifdef ENABLE14443B
 			  //Iso14443bFindTag();	// Scan for 14443B tags
 		#endif
-
-		// Write total number of tags read to UART
+		*/
+		
+		/**
+		 * Write total number of tags read to UART
+		 */
 		if(Tag_Count > 0){
-			Tag_Count = UartNibble2Ascii(Tag_Count & 0x0F);	// convert to ASCII
+			Tag_Count = UartNibble2Ascii(Tag_Count & 0x0F);		///< convert to ASCII
 			UartSendCString("[INFO] Tags Found: ");
 			UartPutChar(Tag_Count);
 			UartPutCrlf();
 			UartPutCrlf();
 		}
-
+		/**
+		 * If either type of tag is found:
+		 * reset empty scan counter,
+		 * reset delay factor,
+		 * delay MCU to prevent duplicate scan,
+		 * reset tag found counter for both types of tag.
+		 * 
+		 */
 		if( ( found_tag_ISO15693 == 1 ) || ( found_tag_ISO14443a == 1 ) )
 		{
 			empty_scan_cnt = 0;
@@ -244,17 +276,28 @@ void main(void)
 			found_tag_ISO15693 = 0;
 			found_tag_ISO14443a = 0;
 		}
-
+		
+		/**
+		 * If edit mode is disabled:
+		 * delay MCU by an increasing amount of time based on 
+		 * delay_factor and initial delay,
+		 * increase empty scan counter.
+		 * 
+		 */
 		if( edit_mode == 0 )
 		{
 			//Dynamic delay for power saving
 			McuDelayMillisecond( delay_factor*SCAN_DELAY_INIT_MS );
 
-			//increment scan count tracker
+			//increment empty scan counter
 			empty_scan_cnt++;
 		}
 
-		//print out scan cnt for debug
+		/**
+		 * If debug mode is enabled:
+		 * print out empty scan count.
+		 * 
+		 */
 		if( DEBUG_MODE == 1 )
 		{
 			char buf[20];
@@ -262,7 +305,14 @@ void main(void)
 			UartSendCString( buf );
 		}
 
-		//increase delay when no tag is detected
+
+		/**
+		 * After 20 consecutive empty scan:
+		 * reset empty scan counter,
+		 * increment of delay counter if it's under threshold,
+		 * print out message for additional delay occurrence.
+		 * 
+		 */
 		if( empty_scan_cnt >= 20 )
 		{
 			empty_scan_cnt = 0;
@@ -272,7 +322,7 @@ void main(void)
 				UartSendCString( "[DEBUG] No TAG in range, additional 500ms delay added\n" );
 			}
 		}
-
+		/************	Smart Medical NFC Scanner Project	************/
 	}
 }
 
@@ -286,16 +336,28 @@ __interrupt void watchdog_timer(void)
 
 /********** IT'S A TRAP!!!! (ISR'S) **********/
 //===============================================================
+
+/************	Smart Medical NFC Scanner Project	************/
+///> The following codes are for P1 ISR
 #pragma vector= PORT1_VECTOR
 __interrupt void PORT1_ISR (void)
 {
-	P1IFG &= ~0x08;	 									//P1.3 Interrupt Flag clear
+	P1IFG &= ~0x08;	 					///> P1.3 Interrupt Flag clear
 
-	while( P1IN == 0x08 );								//debounce
-	McuDelayMillisecond( MODE_SWITCH_DELAY_MS );		//250ms delay to avoid accidental mdoe switch
+	while( P1IN == 0x08 );					///> debounce on P1.3
+	McuDelayMillisecond( MODE_SWITCH_DELAY_MS );		///> 250ms delay to avoid accidental mdoe switch
 
-	P1IFG &= ~0x08;	 									//P1.3 Interrupt Flag clear
+	P1IFG &= ~0x08;	 					///> P1.3 Interrupt Flag clear
 
+	/**
+	 * If edit mode is enabled:
+	 * reset edit mode flag,
+	 * reset empty scan counter,
+	 * reset delay counter,
+	 * print out mode message,
+	 * turn off edit mode LED.
+	 * 
+	 */
 	if( edit_mode == 1 )
 	{
 		edit_mode=0;
@@ -305,6 +367,14 @@ __interrupt void PORT1_ISR (void)
 		UartPutCrlf();
 		LED_14443B_OFF;
 	}
+	/**
+	 * If edit mode is disbaled:
+	 * set edit mode flag,
+	 * reset empty scan counter,
+	 * reset delay counter,
+	 * print out mode message.
+	 * 
+	 */
 	else if( edit_mode == 0 )
 	{
 		edit_mode=1;
@@ -313,10 +383,12 @@ __interrupt void PORT1_ISR (void)
 		UartSendCString("[MODE] Edit Mode");
 		UartPutCrlf();
 
+		///> In debug mode, print out all patients currently stored in database
 		if( DEBUG_MODE == 1 )
 		{
 			print_patients();
 		}
+		///> turn on edit mode LED
 		LED_14443B_ON;
 	}
 
