@@ -1,4 +1,11 @@
 /*
+ * iso15693.h
+ *
+ *  Adapted on: Nov 19, 2014
+ *      Author: Xiao Deng
+ */
+
+/*
  * {iso15693.c}
  *
  * {ISO15693 Specific Functions & Anti-collision}
@@ -54,8 +61,11 @@ extern u08_t stand_alone_flag;
 extern u08_t remote_flag;
 extern u08_t Tag_Count;
 
+/************	Smart Medical NFC Scanner Project	************/
 static unsigned char test_id[ ISO15693_TAG_SIZE ] = "";
 static int char_i = 0;
+/************	Smart Medical NFC Scanner Project	************/
+
 //===============================================================
 // NAME: void Iso15693FindTag(void)
 //
@@ -78,6 +88,7 @@ static int char_i = 0;
 // 23Nov2010	RP	Original Code
 //===============================================================
 
+/************	Smart Medical NFC Scanner Project	************/
 int
 Iso15693FindTag(int md_sel )
 {
@@ -104,6 +115,7 @@ Iso15693FindTag(int md_sel )
 
 	return rtn;
 }
+/************	Smart Medical NFC Scanner Project	************/
 
 //===============================================================
 // NAME: void Iso15693Anticollision(u08_t *mask, u08_t length)
@@ -253,6 +265,7 @@ Iso15693Anticollision(u08_t *mask, u08_t length, int md_sel )		// host command 0
 			}
 		}
 
+	/************	Smart Medical NFC Scanner Project	************/
 		command[0] = RSSI_LEVELS;						// read RSSI levels
 		Trf7970ReadSingle(command, 1);
 		switch(i_reg)
@@ -304,7 +317,8 @@ Iso15693Anticollision(u08_t *mask, u08_t length, int md_sel )		// host command 0
 			default:
 				break;
 		}
-
+	/************	Smart Medical NFC Scanner Project	************/
+	
 		Trf7970Reset();									// FIFO has to be reset before receiving the next response
 
 		if((no_slots == 16) && (j < 16))				// if 16 slots used send EOF(next slot)
@@ -323,6 +337,7 @@ Iso15693Anticollision(u08_t *mask, u08_t length, int md_sel )		// host command 0
 		}
 	}													// for
 
+	/************	Smart Medical NFC Scanner Project	************/
 	if(found == 1)									// LED on?
 	{
 		//LED_15693_ON;								// LEDs indicate detected ISO15693 tag
@@ -336,7 +351,8 @@ Iso15693Anticollision(u08_t *mask, u08_t length, int md_sel )		// host command 0
 		LED_14443A_OFF;
 		LED_POWER_ON;
 	}
-
+	/************	Smart Medical NFC Scanner Project	************/
+	
 	new_length = length + 4; 							// the mask length is a multiple of 4 bits
 
 	mask_size = (((new_length >> 2) + 1) >> 1);
@@ -371,6 +387,8 @@ Iso15693Anticollision(u08_t *mask, u08_t length, int md_sel )		// host command 0
 	}
 
 	IRQ_OFF;
+	/************	Smart Medical NFC Scanner Project	************/
 	return found;
+	/************	Smart Medical NFC Scanner Project	************/
 }														// Iso15693Anticollision
 
