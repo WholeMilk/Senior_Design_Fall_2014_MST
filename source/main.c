@@ -17,9 +17,10 @@
  * 	1. Files created for this project: patient.c, patient.h
  * 	2. Files adapted from TI: main.c, iso15693.c, iso15693.h, iso14443a.c, iso14443a.h
  * 	3. This program supports both the ISO15693 and ISO14443A type NFC tags.
- * 	4. This program is started in Authentication mode by default.
- * 	5. This program is started with Debug mode enabled by default.
- * 	6. Debug information can be viewed in a serial terminal by connecting the Lauchpad board to a PC via a USB connection.
+ * 	4. This program does NOT support the ISO14443B type NFC tags, thus the iso14443b.c and iso14443b.h files are un-touched.
+ * 	5. This program is started in Authentication mode by default.
+ * 	6. This program is started with Debug mode enabled by default.
+ * 	7. Debug information can be viewed in a serial terminal by connecting the Lauchpad board to a PC via a USB connection.
  */
 
 /*
