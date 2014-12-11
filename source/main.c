@@ -10,6 +10,7 @@
  * 
  * Advisor:	Dr. Kosbar
  * Instructor:	Dr. Rosa Zheng
+ * Department: 	Computer and Electrical Engineering
  * Institution:	Missouri University of Science & Technology
  * 
  * NOTES:
