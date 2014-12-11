@@ -1,4 +1,11 @@
 /*
+ * iso14443a.c
+ *
+ *  Adapted on: Nov 19, 2014
+ *      Author: Xiao Deng
+ */
+
+/*
  * {iso14443a.c}
  *
  * {ISO14443A Specific Functions & Anti-collision}
@@ -39,8 +46,11 @@
 #include "iso14443a.h"
 #include "trf7970.h"
 #include <string.h>
-#include "patient.h"
 #include <stdio.h>
+
+/************	Smart Medical NFC Scanner Project	************/
+#include "patient.h"
+/************	Smart Medical NFC Scanner Project	************/
 
 //===============================================================
 
@@ -68,10 +78,13 @@ extern u08_t Tag_Count;
 #define RX_CRC		0x08
 #define NO_RX_CRC	0x88
 
+/************	Smart Medical NFC Scanner Project	************/
 #define ISO14443_TAG_SIZE 7
 
 static unsigned char test_id[ ISO14443_TAG_SIZE ] = "";
 static int char_i = 0;
+/************	Smart Medical NFC Scanner Project	************/
+
 //===============================================================
 // NAME: void Iso14443aFindTag(void)
 //
@@ -94,6 +107,7 @@ static int char_i = 0;
 // 23Nov2010	RP	Original Code
 //===============================================================
 
+/************	Smart Medical NFC Scanner Project	************/
 int
 Iso14443aFindTag(int md_sel)
 {
@@ -117,6 +131,7 @@ Iso14443aFindTag(int md_sel)
 
 	return rtn;
 }
+/************	Smart Medical NFC Scanner Project	************/
 
 //===============================================================
 // NAME: void Iso14443aAnticollision(u08_t reqa)
@@ -133,14 +148,15 @@ Iso14443aFindTag(int md_sel)
 //			[2] receive ATQA
 //			[3] perform bit frame anticollison loop
 //
-// NOTE: Collisions returned as ì(z)î.
-//       Timeouts returned as ì()î.
+// NOTE: Collisions returned as ‚Äú(z)‚Äù.
+//       Timeouts returned as ‚Äú()‚Äù.
 //
 // CHANGE:
 // DATE  		WHO	DETAIL
 // 23Nov2010	RP	Original Code
 //===============================================================
 
+/************	Smart Medical NFC Scanner Project	************/
 int
 Iso14443aAnticollision(u08_t reqa,int md_sel)
 {
@@ -168,7 +184,8 @@ Iso14443aAnticollision(u08_t reqa,int md_sel)
 
 	Iso14443_config(NO_RX_CRC);
 	return rtn;
-}											// Iso14443aAnticollision
+}		
+/************	Smart Medical NFC Scanner Project	************/									// Iso14443aAnticollision
 
 //===============================================================
 // NAME: void Iso14443aLoop(u08_t select, u08_t nvb, u08_t
@@ -188,8 +205,8 @@ Iso14443aAnticollision(u08_t reqa,int md_sel)
 //
 // PROCESS:	(ISO14443-3)
 //
-// NOTE: Collisions returned as ì(z)î.
-//       Timeouts returned as ì()î.
+// NOTE: Collisions returned as ‚Äú(z)‚Äù.
+//       Timeouts returned as ‚Äú()‚Äù.
 //
 // CHANGE:
 // DATE  		WHO	DETAIL
@@ -287,6 +304,7 @@ Iso14443aLoop(u08_t cascade_level, u08_t nvb, u08_t *uid, int md_sel)
 				UartSendCString("[TAG]  ISO14443 type A: ");
 				UartPutChar('[');
 
+		/************	Smart Medical NFC Scanner Project	************/
 				switch (cascade_level)
 				{
 				case 1:
@@ -350,7 +368,8 @@ Iso14443aLoop(u08_t cascade_level, u08_t nvb, u08_t *uid, int md_sel)
 		}
 		_nop();
 	}
-
+		/************	Smart Medical NFC Scanner Project	************/
+		
 	if(i_reg == 0x00)							// timer interrupt
 	{	
 //		if(stand_alone_flag == 1)
@@ -423,7 +442,8 @@ Iso14443aLoop(u08_t cascade_level, u08_t nvb, u08_t *uid, int md_sel)
 		new_uid1[nvbytes] = new_uid1[nvbytes] + nvbits1;
 		Iso14443aLoop(cascade_level1, coll_poss1, new_uid1, 0);		// recursive call for anticollision procedure
 	}
-
+	
+	/************	Smart Medical NFC Scanner Project	************/
 	if( stand_alone_flag == 1 )
 	{
 		if(found == 1)
@@ -440,6 +460,7 @@ Iso14443aLoop(u08_t cascade_level, u08_t nvb, u08_t *uid, int md_sel)
 		}
 	}
 	return found;
+	/************	Smart Medical NFC Scanner Project	************/
 
 }														// Iso14443aLoop
 
