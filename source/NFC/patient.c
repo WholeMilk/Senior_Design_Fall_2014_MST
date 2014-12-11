@@ -9,7 +9,7 @@
 #include "trf7970.h"
 #include <stdio.h>
 
-///> patient database for storing patient tag ID as C-string
+///> patient database for storing patient tag ID as a C-string array
 unsigned char patient[MAX_NUM_PATIENTS][TAG_ID_SIZE];
 
 /**
