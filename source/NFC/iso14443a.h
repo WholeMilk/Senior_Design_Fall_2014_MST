@@ -1,4 +1,11 @@
 /*
+ * iso15693.h
+ *
+ *  Adapted on: Nov 19, 2014
+ *      Author: Xiao Deng
+ */
+
+/*
  * {iso14443a.h}
  *
  * {ISO14443A header file}
@@ -54,9 +61,12 @@
 
 //===============================================================
 
+/************	Smart Medical NFC Scanner Project	************/
 int Iso14443aAnticollision(u08_t reqa, int md_sel);
 int Iso14443aFindTag(int md_sel);
 int Iso14443aLoop(u08_t select, u08_t nvb, u08_t *UID, int md_sel);
+/************	Smart Medical NFC Scanner Project	************/
+
 void Iso14443a_command(u08_t command);
 void Iso14443a_halt();
 void Iso14443aSelectCommand(u08_t select, u08_t nvb, u08_t *uid);
