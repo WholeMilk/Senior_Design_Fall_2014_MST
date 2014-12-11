@@ -270,122 +270,188 @@ int remove_patient( unsigned char* person, int tag_size )
 	}
 }
 
+/**
+ * Authenticate patient besed on its ID, ID size and tag size.
+ * This function checks patient ID against database and output response according
+ * to if the patient is in the database or not, also acknowledge empty database.
+ * 
+ * @param mode_sel Mode select flag, 1 = Edit mode, 0 = Authentication mode.
+ * @param person String of patient to look for.
+ * @param patient_size Size of the actual input patient ID as int.
+ * @param tag_size Size of the type of patient tag in int, to identify tyoe of tags.
+ * 
+ * @return IS_PATEINT If patient is found in Authentication mode.
+ * @return NOT_PATEINT If patient is not found in Authentication mode.
+ * @return ADDED_PATIENT If patient is added in Edit mode.
+ * @return REMOVED_PATIENT If patient is removed in Edit mode.
+ * @return FULL_PATIENT If trying to add a patient when patient database is full in Edit mode.
+ * 
+ * @return NO_PATEINT If patient database is empty in either mode.
+ * @return ERROR If an error has occured.
+ * 
+ */ 
 int authenticate_patient( int mode_sel, unsigned char* patient, int patient_size,  int tag_size )
 {
+	///> check if patient is in database
 	int check_patient_rtn = check_patient( patient, tag_size );
 	int i = 0;
 	int LED_rtn;
 
+	///> print out tag size message in debug mode
 	if( DEBUG_MODE == 1 )
 	{
 		char buf[50];
 		sprintf( buf, "[DEBUG] actual_tag_size = %d, tag_size = %d\n", patient_size, tag_size );
 		UartSendCString( buf );
 	}
-
+	///> if tag size conflict occures, return TAG_SIZE_ERROR
 	if( patient_size < tag_size )
 	{
 		return TAG_SIZE_ERROR;
 	}
 
+	///> In Authentication mode,
 	if( mode_sel == 0 )
 	{
+		///> if patient is found to be an existing patient in database,
 		if( check_patient_rtn == IS_PATIENT )
 		{
+			///> print out patient ID
 			UartSendCString("[INFO] Patient acknowledged, ID = ");
 			for(i=0; i<tag_size; i++)
 			{
 				UartPutByte(patient[i]);
 			}
+			///> blink green LED indicating patient is acknowledged
 			LED_rtn = IS_PATIENT;
 		}
+		///> else if patient is not a patient in database,
 		else if( check_patient_rtn == NOT_PATIENT )
 		{
+			///> print out patient ID
 			UartSendCString("[INFO] Unauthorized patient, ID = ");
 			for(i=0; i<tag_size; i++)
 			{
 				UartPutByte(patient[i]);
 			}
+			///> blink red LED indicating patient is not acknowledged
 			LED_rtn = NOT_PATIENT;
 		}
+		///> else if databse is empty,
 		else if( check_patient_rtn == NO_PATIENT )
 		{
+			///> print out empty database message
 			UartSendCString("[INFO] No patient in database");
 			LED_rtn = NO_PATIENT;
 		}
+		///> if an error has occured
 		else
 		{
+			///> print out error message
 			UartSendCString("[ERROR] Patient checking error");
 			LED_rtn = ERROR;
 		}
+		///> printout return char for formating
 		UartPutCrlf();
 	}
+	///> In Edit mode,
 	else if( mode_sel == 1 )
 	{
+		///> if databse is empty or patient is not found,
 		if( ( check_patient_rtn == NOT_PATIENT ) || ( check_patient_rtn == NO_PATIENT ) )
 		{
+			///> attempt to add the patient
 			int add_patient_rtn = add_patient( patient, tag_size );
+			///> if adding patient success,
 			if( add_patient_rtn == ADDED_PATIENT )
 			{
+				///> print out patient added message
 				UartSendCString("[INFO] Patient Added, ID = ");
 				for(i=0; i<tag_size; i++)
 				{
 					UartPutByte(patient[i]);
 				}
+				///> blink gree LED indicating patient added
 				LED_rtn = ADDED_PATIENT;
 			}
+			///> if databse is full,
 			else if ( add_patient_rtn == FULL_PATIENT )
 			{
+				///> blink both green and red LED indicating patient database is full
 				LED_rtn = FULL_PATIENT;
-				UartSendCString("[INFO] FULL you fool");
+				UartSendCString("[INFO] Patient Databse FULL");
 			}
+			///> if error,
 			else
 			{
+				///> blink LEDs in error pattern indicating error occured
 				LED_rtn = ERROR;
 				char buf[20];
 				sprintf( buf, "[DEBUG] YOLO, add_patient returned: %d", add_patient_rtn );
 				UartSendCString(buf);
 			}
+			///> printout return char for formating
 			UartPutCrlf();
 		}
+		///> else if patient is found in the database,
 		else if( check_patient_rtn == IS_PATIENT )
 		{
+			///> attempt to remove patient,
 			if( remove_patient( patient, tag_size ) == REMOVED_PATIENT )
 			{
+				///> if patient is successfully removed, print out its ID
 				UartSendCString("[INFO] Patient Removed, ID = ");
 				for(i=0; i<tag_size; i++)
 				{
 					UartPutByte( patient[i] );
 				}
+				///> blink green LED indicating patient is removed
 				LED_rtn = REMOVED_PATIENT;
 			}
+			///> if remove patient failed, print out database empty message
 			else
 			{
 				UartSendCString( "[INFO] No patient in database" );
+				///> blink both green and red LED indicating empty database
 				LED_rtn = NO_PATIENT;
 			}
+			///> printout return char for formating
 			UartPutCrlf();
 		}
+		///> if check patient returned error,
 		else
 		{
+			///> print out error message
 			UartSendCString( "[ERROR] Patient checking error" );
 			UartPutCrlf();
+			///> blink LEDs in error pattern indicating error occured
 			LED_rtn = ERROR;
 
 		}
 	}
+	///> if mode select in invalid,
 	else
 	{
+		///> print out invalid mode message
 		UartSendCString( "[ERROR] Invalid mode" );
 		UartPutCrlf();
+		///> blink LEDs in error pattern indicating error occured
 		LED_rtn = ERROR;
 	}
+	///> return LED value to LED_disco()
 	return LED_rtn;
 }
 
+
+/**
+ * Blink the red LED.
+ * Blink the red LED in 20Hz frequency for a predefined times.
+ * 
+ */ 
 void LED_red_blink()
 {
 	int i=0;
+	///> blink LED number of times defined in LED_BLINK_RATE
 	for( i=0; i<LED_BLINK_RATE; i++ )
 	{
 		LED_14443A_ON;
@@ -396,9 +462,15 @@ void LED_red_blink()
 }
 
 
+/**
+ * Blink the green LED.
+ * Blink the green LED in 20Hz frequency for a predefined times.
+ * 
+ */ 
 void LED_green_blink()
 {
 	int i=0;
+	///> blink LED number of times defined in LED_BLINK_RATE
 	for( i=0; i<LED_BLINK_RATE; i++ )
 	{
 		LED_15693_ON;
@@ -408,9 +480,16 @@ void LED_green_blink()
 	}
 }
 
+
+/**
+ * Blink both LEDs.
+ * Blink both LEDs in 20Hz frequency for a predefined times.
+ * 
+ */ 
 void LED_yolo_blink()
 {
 	int i=0;
+	///> blink LED number of times defined in LED_BLINK_RATE
 	for( i=0; i<LED_BLINK_RATE; i++ )
 	{
 		LED_15693_ON;
@@ -422,6 +501,21 @@ void LED_yolo_blink()
 	}
 }
 
+/**
+ * Blink LEDs according to return values from authenticate_patient().
+ * 
+ * Case:	IS_PATIENT, blink green LED.
+ * 		NOT_PATIENT, blink red LED.
+ * 		ADDED_PATIENT, blink green LED.
+ * 		REMOVED_PATIENT, blink red LED.
+ * 		FULL_PATIENT, blink both LED.
+ * 		NO_PATIENT, blink both LED.
+ * 		TAG_SIZE_ERROR, blink both LED then red LED.
+ * 		other cases, blink green LED then red LED then both LED.
+ * 
+ * @param LED_val Return value from authenticate_patient().
+ * 
+ */ 
 void LED_disco( int LED_val )
 {
 	switch ( LED_val )
