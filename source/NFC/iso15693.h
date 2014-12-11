@@ -1,4 +1,10 @@
 /*
+ * iso15693.h
+ *
+ *  Adapted on: Nov 19, 2014
+ *      Author: Xiao Deng
+ */
+/*
  * {iso15693.h}
  *
  * {ISO15693 header file}
@@ -59,8 +65,11 @@
 
 //===============================================================
 
+/************	Smart Medical NFC Scanner Project	************/
 int Iso15693FindTag(int md_sel );
 int Iso15693Anticollision(u08_t *mask, u08_t length, int md_sel );
+/************	Smart Medical NFC Scanner Project	************/
+
 //===============================================================
 
 #endif
