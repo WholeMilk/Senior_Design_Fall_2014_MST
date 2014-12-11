@@ -1,5 +1,5 @@
 /*
- * iso15693.h
+ * iso14443a.h
  *
  *  Adapted on: Nov 19, 2014
  *      Author: Xiao Deng
