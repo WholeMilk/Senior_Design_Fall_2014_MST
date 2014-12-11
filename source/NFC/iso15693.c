@@ -44,7 +44,10 @@
 */
 
 #include "iso15693.h"
+
+/************	Smart Medical NFC Scanner Project	************/
 #include "patient.h"
+/************	Smart Medical NFC Scanner Project	************/
 
 //===============================================================
 
