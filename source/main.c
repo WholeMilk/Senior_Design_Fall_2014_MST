@@ -1,4 +1,3 @@
-
 /**
  * Senior Design Project II - EE/CPE 4097
  * 
@@ -10,7 +9,7 @@
  * 		Al Dohmen	- ardqm9@mst.edu
  * 
  * Advisor:	Dr. Kosbar
- * Instructor:	Dr Rosa Zheng
+ * Instructor:	Dr. Rosa Zheng
  * Institution:	Missouri University of Science & Technology
  * 
  * NOTES:
