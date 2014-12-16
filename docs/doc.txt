@@ -1,0 +1,22 @@
+
+# Some Notes for the Software Flow Chart in Final Report
+
+The software for the smart reader is where all the functionality are realized. TI's example code for the Lauchpad and NFC were adapted as the bases for the software, it haddles most of the lower level hardware communication protocol as well as microcontroller register setup and initilization. TI also offers some convinient functions for configuration of the MSP430G2553 microcontroller as well as the TRF7970A NFC controller. 
+
+At a high level, the software of the reader provides the following functionalities:
+  1. Two operating modes: Authenticating and Programming.
+  2. Authenticating mode:
+    In Authenticating mode, when a recorded tag is detected, blink green LED to notify user for tag acknowledgment.
+    In Authenticating mode, when a foreign tag is detected, blink red LED to notify user for un-recognized tag.
+    In Authenticating mode, when a tag is detected while the internal memory is empty, blink both green and red LEDs to notify user for empty memory.
+  3. Programming mode:
+    In Programming mode, when a recorded tag is detected, remove the tag from the internal memory and blink red LED to notify user for the removal.
+    In Programming mode, when a foreign tag is detected, add the tag to the internal memory and blink green LED to notify user for the addition.
+  4. Mode toggling with a push button with debounce and blue LED (on) indicating Programming mode.
+  5. Dynamically adjusting scanning frequency.
+    Add scan delay when no tag detected after a pre-set number of scans to save power.
+    Pre-set maximum delay providing a smooth operating experience.
+  6. When a successful scan is registered, initilize a small pre-set delay to prevent repeated scan.
+  7. A debug mode flag, can be enabled for printing out debug information of the reader operation and memory content. (Enabled by default)
+  8. Support both the ISO14443a and ISO15693 type NFC tags.
+    
