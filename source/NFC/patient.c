@@ -94,7 +94,7 @@ int get_patient_num()
  * @param person String of patient to look for.
  * @param tag_size Size of the tag ID in int, to identify tyoe of tags.
  * 
- * @return patient_pos, index of patient in the database.
+ * @return patient_pos Index of patient in the database.
  * @return UNKNOWN_PATIENT
  */ 
 int find_patient( unsigned char* person, int tag_size )
@@ -148,9 +148,9 @@ int find_patient( unsigned char* person, int tag_size )
  * @param person String of patient to look for.
  * @param tag_size Size of the tag ID in int, to identify tyoe of tags.
  * 
- * @return IS_PATIENT, when patient is found in database.
- * @return NO_PATIENT, when paritne is not found in database.
- * @return UNKNOWN_PATIENT, when there is no patient in database.
+ * @return IS_PATIENT When patient is found in database.
+ * @return NO_PATIENT When paritne is not found in database.
+ * @return UNKNOWN_PATIENT When there is no patient in database.
  */ 
 int check_patient( unsigned char* person, int tag_size )
 {
@@ -175,9 +175,9 @@ int check_patient( unsigned char* person, int tag_size )
  * @param person String of patient to look for.
  * @param tag_size Size of the tag ID in int, to identify tyoe of tags.
  * 
- * @return ADDED_PATIENT, when patient is successfully added.
- * @return FULL_PATEINT, when patient database if full.
- * @return YOLO, when something weird is going on.
+ * @return ADDED_PATIENT When patient is successfully added.
+ * @return FULL_PATEIN When patient database if full.
+ * @return YOLO When something weird is going on.
  */ 
 int add_patient( unsigned char* person, int tag_size )
 {
@@ -244,8 +244,8 @@ int add_patient( unsigned char* person, int tag_size )
  * @param person String of patient to look for.
  * @param tag_size Size of the tag ID in int, to identify tyoe of tags.
  * 
- * @return REMOVED_PATIENT, when patient is successfully removed from database.
- * @return NOT_PATIENT, when paritne is not found in database.
+ * @return REMOVED_PATIENT When patient is successfully removed from database.
+ * @return NOT_PATIENT When paritne is not found in database.
  */ 
 int remove_patient( unsigned char* person, int tag_size )
 {
