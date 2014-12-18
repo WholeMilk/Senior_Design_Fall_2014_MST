@@ -1,7 +1,7 @@
 Smart Medical NFC Reader
 ===========================
 
-###### 12/18/2014 Updates:
+###### 12/18/2014:
   * Comments are done.
   * Needs to upload documentations including Project Report and Project Presentation.
   
