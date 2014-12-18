@@ -1,5 +1,6 @@
 Smart Medical NFC Reader
 ===========================
+Welcome to Team 4 - Smart Medical Identification
 
 ###### 12/18/2014:
   * Comments are done.
