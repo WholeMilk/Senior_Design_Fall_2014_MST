@@ -6,8 +6,8 @@
  */
 
 ///> Header define protection
-#ifndef PATIENT_H_
-#define PATIENT_H_
+#ifndef _PATIENT_H_
+#define _PATIENT_H_
 
 #define LED_BLINK_RATE 10		///> Number of times LED blinks
 #define MAX_NUM_PATIENTS 6		///> Maximum number of patients support in the database
@@ -46,4 +46,4 @@ int remove_patient( unsigned char* person, int tag_size );
 int authenticate_patient( int mode_sel, unsigned char* patient, int patient_size,  int tag_size );
 void LED_disco( int LED_val );
 
-#endif /* PATIENT_H_ */
+#endif /* _PATIENT_H_ */
