@@ -176,7 +176,7 @@ int check_patient( unsigned char* person, int tag_size )
  * @param tag_size Size of the tag ID in int, to identify tyoe of tags.
  * 
  * @return ADDED_PATIENT When patient is successfully added.
- * @return FULL_PATEIN When patient database if full.
+ * @return FULL_PATEINT When patient database if full.
  * @return YOLO When something weird is going on.
  */ 
 int add_patient( unsigned char* person, int tag_size )
